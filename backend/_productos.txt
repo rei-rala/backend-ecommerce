@@ -1,0 +1,62 @@
+[
+	{
+		"id": 1,
+		"title": "Casa",
+		"price": 9999,
+		"description": "productito number a",
+		"thumbnail": "https://image.freepik.com/vector-gratis/casa-dos-pisos_1308-16176.jpg",
+		"stock": 0,
+		"timestamp": 1633025992300,
+		"vistas": 0
+	},
+	{
+		"id": 2,
+		"title": "Avion",
+		"price": 1234567,
+		"description": "productito number b",
+		"thumbnail": "https://image.freepik.com/psd-gratis/imagen-tridimensional-avion_53876-8970.jpg",
+		"stock": 0,
+		"timestamp": 1633025992300,
+		"vistas": 0
+	},
+	{
+		"id": 3,
+		"title": "Mundo",
+		"price": 0,
+		"description": "productito number c",
+		"thumbnail": "https://image.freepik.com/vector-gratis/pegatina-vintage-globo-dibujos-animados-png_53876-127373.jpg",
+		"stock": 0,
+		"timestamp": 1633025992300,
+		"vistas": 0
+	},
+	{
+		"id": 4,
+		"title": "Casa",
+		"price": 9999,
+		"description": "productito number x",
+		"thumbnail": "https://image.freepik.com/vector-gratis/casa-dos-pisos_1308-16176.jpg",
+		"stock": 0,
+		"timestamp": 1633025992300,
+		"vistas": 0
+	},
+	{
+		"id": 5,
+		"title": "Avion",
+		"price": 1234567,
+		"description": "productito number y",
+		"thumbnail": "https://image.freepik.com/psd-gratis/imagen-tridimensional-avion_53876-8970.jpg",
+		"stock": 0,
+		"timestamp": 1633025992300,
+		"vistas": 0
+	},
+	{
+		"id": 6,
+		"title": "Mundo",
+		"price": 0,
+		"description": "productito number z",
+		"thumbnail": "https://image.freepik.com/vector-gratis/pegatina-vintage-globo-dibujos-animados-png_53876-127373.jpg",
+		"stock": 0,
+		"timestamp": 1633025992300,
+		"vistas": 0
+	}
+]

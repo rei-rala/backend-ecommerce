@@ -1,11 +1,24 @@
 
-const express = require('express')
-const cartRoute = require('./routers/cartRouter')
-const productsRoute = require('./routers/productRouter')
+export const express = require('express')
+const cartsRoute = require('./routes/carts.routes')
+const productsRoute = require('./routes/product.routes')
+const cartIndividualRoute = require('./routes/cartIndividual.routes')
 
-const { archivoProductos/* ,agregaProductosPrueba() */ } = require("./productManager/productManager")
-import { Producto } from "./productManager/productManager"
-//agregaProductosPrueba()
+import { archivoProductos } from "./models/Archivo"
+import { archivoCarts } from "./models/Archivo"
+
+import { addCart, deleteCartById, getCartId, getCarts, updateCartById } from "./controllers/carts.controller"
+import { addProd, deleteProductById, getProdById, getProds, updateProductById } from "./controllers/products.controller"
+import { addToCartByProdId, cleanCartById, deleteFromCartByProdId, getCartProdById, getCartProds } from "./controllers/cartIndividual.controller"
+
+const { agregaProductosPrueba } = require("./models/Product")
+archivoProductos.cleanFile()
+  .finally(() => agregaProductosPrueba())
+
+const { agregaCarritosPrueba } = require("./models/CartIndividual")
+archivoCarts.cleanFile()
+  .finally(() => agregaCarritosPrueba())
+
 
 const app = express()
 const PORT = process.env.PORT || 8080
@@ -15,8 +28,9 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('public'))
 
-app.use('/carrito', cartRoute)
+app.use('/carritos', cartsRoute)
 app.use('/productos', productsRoute)
+app.use('/carrito', cartIndividualRoute)
 
 
 app.listen(PORT, () => { console.log(`Escuchando en puerto ${PORT}`) })
@@ -25,30 +39,27 @@ app.on('error', (err: any) => console.info(`Se produjo el siguiente error:\n\t=>
 
 // ! RUTAS
 
-app.get('/productos/listar', (_, res) => {
-  try {
-    archivoProductos.read()
-      .then(r => res.send({ ok: true, productos: r }))
-      .catch(err => { throw new Error(err) })
-  }
-  catch (err) {
-    console.log('Error en lectura de archivo:', err)
-  }
-})
+// TEST ADMINISTRADOR, para el test se estan enviando en body la key isUserAdmin con string 'true'
+const isAdmin = true
 
-app.get('/productos/listar/:idProd', (req, res) => {
-  const id = parseInt(req.params.idProd)
-  try {
-    archivoProductos.read()
-      .then((list: Producto[]) => list.find((p: Producto) => p.id === id))
-      .then((p: Producto) => {
-        p
-          ? res.status(200).send({ ok: true, producto: p })
-          : res.status(404).send({ ok: false, producto: {}, msg: `Not found id ${id}` })
-      })
+// ! PRODUCTOS - Modificaciones requieren admin
+app.get('/productos/listar', getProds)
+app.get('/productos/listar/:idProd', getProdById)
+app.post('/productos/agregar', addProd)
+app.patch('/productos/actualizar/:idProd', updateProductById)
+app.delete('/productos/borrar/:idProd', deleteProductById)
 
-  }
-  catch (err) {
-    console.log('Error en lectura de archivo:', err)
-  }
-})
+
+// ! CARRITOS GLOBAL - Toda ruta requiere admin
+app.get('/carritos/listar', getCarts)
+app.get('/carritos/listar/:idCarr', getCartId)
+app.post('/carritos/agregar', addCart)
+app.patch('/carritos/actualizar/:idCarr', updateCartById)
+app.delete('/carritos/borrar/:idCarr', deleteCartById)
+
+// ! CARRITO INDIVIDUAL
+app.get('/carrito/listar', getCartProds)
+app.get('/carrito/listar/:idProd', getCartProdById)
+app.post('/carrito/agregar/:idProd', addToCartByProdId)
+app.delete('/carrito/borrar/:idProd', deleteFromCartByProdId)
+app.delete('/carrito/limpiar', cleanCartById)
