@@ -25,7 +25,7 @@ export default class Archivo {
 
   getById = async (objId: number) => {
     return await this.read()
-      .then((arr => (
+      .then(((arr: []) => (
         arr.length
           ? arr.find((obj: Product | Cart) => obj.id === objId) || null
           : null
@@ -54,9 +54,9 @@ export default class Archivo {
       const updated = data.find((obj: Product | Cart) => obj.id === objId)
 
       if (updated) {
-        for (let prop in newData) {
-          updated[prop] = newData[prop]
-        }
+        for (let prop in newData) { updated[prop] = newData[prop] }
+        // Correccion de ID (wtf?)
+        updated.id = objId
 
         await this.overWriteFile(data)
         status = ({ ok: true, msg: `${typeof newData} con id ${objId} actualizado` })

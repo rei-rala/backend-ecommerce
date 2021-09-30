@@ -9,7 +9,7 @@ import { archivoCarts } from "./models/Archivo"
 
 import { addCart, deleteCartById, getCartId, getCarts, updateCartById } from "./controllers/carts.controller"
 import { addProd, deleteProductById, getProdById, getProds, updateProductById } from "./controllers/products.controller"
-import { addToCartByProdId, cleanCartById, deleteFromCartByProdId, getCartProdById, getCartProds } from "./controllers/cartIndividual.controller"
+import { addToCartByProdId, wipeCart, deleteFromCartByProdId, getCartProdById, getCartProds } from "./controllers/cartIndividual.controller"
 
 const { agregaProductosPrueba } = require("./models/Product")
 archivoProductos.cleanFile()
@@ -39,7 +39,7 @@ app.on('error', (err: any) => console.info(`Se produjo el siguiente error:\n\t=>
 
 // ! RUTAS
 
-// TEST ADMINISTRADOR, para el test se estan enviando en body la key isUserAdmin con string 'true'
+// TEST ADMINISTRADOR, para el test se estan enviando en body la key isUserAdmin con STRING 'true'
 const isAdmin = true
 
 // ! PRODUCTOS - Modificaciones requieren admin
@@ -62,4 +62,4 @@ app.get('/carrito/listar', getCartProds)
 app.get('/carrito/listar/:idProd', getCartProdById)
 app.post('/carrito/agregar/:idProd', addToCartByProdId)
 app.delete('/carrito/borrar/:idProd', deleteFromCartByProdId)
-app.delete('/carrito/limpiar', cleanCartById)
+app.delete('/carrito/limpiar', wipeCart)

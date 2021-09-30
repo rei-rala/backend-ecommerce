@@ -50,13 +50,16 @@ export const addProd = (req, res) => {
 }
 
 export const updateProductById = (req, res) => {
-  const id = parseInt(req.params.idProd)
+  const id = req.params.idProd && !isNaN(req.params.idProd) ? parseInt(req.params.idProd) : -1
+
+  if (id === -1) return res.send({ ok: false, msg: 'ID invalido' })
+
   const { isUserAdmin, title, description, thumbnail } = req.body
   const price = parseInt(req.body.price)
-  const stock = req.body.stock ? parseInt(req.body.stock) : 0
+  const stock = req.body.stock && !isNaN(req.body.stock) ? parseInt(req.body.stock) : -1
 
   if (/*isAdmin */isUserAdmin && isUserAdmin === 'true') {
-    if (title && price && description && thumbnail && stock) {
+    if (title && price && description && thumbnail && stock >= 0) {
       const updatedData = new Product(title, price, description, thumbnail, stock)
 
       archivoProductos.updateObject(id, updatedData)

@@ -1,10 +1,20 @@
 import { archivoCarts, archivoProductos } from "../models/Archivo"
 import { Cart } from "../models/Cart"
-import { Product } from "../models/Product"
 import { carts } from "../models/CartIndividual"
 
+const invalidateNumberIDs = (idCarrito: number, idProducto?: number) => {
+  if (idProducto && idProducto === -1 && idCarrito && idCarrito === -1) { return ({ error: true, msg: 'ID Producto e ID Carrito invalido' }) }
+  else if (idProducto && idProducto === -1) { return ({ error: true, msg: 'ID Producto invalido' }) }
+  else if (idCarrito && idCarrito === -1) { return ({ error: true, msg: 'ID Carrito invalido' }) }
+
+  return ({ error: false, msg: 'continue' })
+}
+
 export const getCartProds = (req, res) => {
-  const cartId = req.body.cartId ? parseInt(req.body.cartId) : -1
+  const cartId = req.body.cartId && !isNaN(req.body.cartId) ? parseInt(req.body.cartId) : -1
+
+  const test = invalidateNumberIDs(cartId)
+  if (test.error) return res.send(test)
 
   try {
     const modifiedChart = carts.find(c => c.id === cartId)
@@ -21,25 +31,32 @@ export const getCartProds = (req, res) => {
       .catch(msg => res.send({ ok: false, msg }))
   }
   catch (err) {
-    console.log('Error en lectura de archivo:', err)
     res.send({ ok: false, msg: err })
   }
 }
 
 export const getCartProdById = (req, res) => {
-  const idProd = req.params.idProd ? parseInt(req.params.idProd) : -1
-  const cartId = req.body.cartId ? parseInt(req.body.cartId) : -1
+  const idProd = req.params.idProd && !isNaN(req.params.idProd) ? parseInt(req.params.idProd) : -1
+  const cartId = req.body.cartId && !isNaN(req.body.cartId) ? parseInt(req.body.cartId) : -1
+
+  const test = invalidateNumberIDs(cartId, idProd)
+  if (test.error) return res.send({ ok: false, msg: test.msg })
 
   try {
-    archivoCarts.read()
-      .then((cart: Cart[]) => cart.find((c: Cart) => c.id === cartId))
-      .then((c: Cart) => {
-        const prodInCart = c.arrayProducts.find(p => p.id === idProd)
-        prodInCart
-          ? res.status(200).send({ ok: true, idCarrito: c.id, timestamp: c.timestamp, producto: prodInCart })
-          : res.status(404).send({ ok: false, producto: {}, msg: `Not found id ${idProd}` })
-      })
-      .catch(err => { throw new Error(err) })
+    const cartFound = carts.find(c => c.id === cartId)
+
+    if (cartFound) {
+      archivoCarts.getById(cartId)
+        .then((c: Cart) => {
+          const prodInCart = c.arrayProducts.find(p => p.id === idProd)
+          prodInCart
+            ? res.status(200).send({ ok: true, idCarrito: c.id, timestamp: c.timestamp, producto: prodInCart })
+            : res.status(404).send({ ok: false, idCarrito: c.id, producto: {}, msg: `No encontrado producto id ${idProd}` })
+        })
+        .catch(err => { throw new Error(err) })
+    } else {
+      throw new Error(`Carrito con ID ${cartId} no encontrado`)
+    }
   }
   catch (err) {
     res.send({ ok: false, msg: err })
@@ -47,36 +64,42 @@ export const getCartProdById = (req, res) => {
 }
 
 export const addToCartByProdId = (req, res) => {
-  const idProd = req.params.idProd ? parseInt(req.params.idProd) : -1
-  const cartId = req.body.cartId ? parseInt(req.body.cartId) : -1
+  const idProd = req.params.idProd && !isNaN(req.params.idProd) ? parseInt(req.params.idProd) : -1
+  const cartId = req.body.cartId && !isNaN(req.body.cartId) ? parseInt(req.body.cartId) : -1
+
+  const test = invalidateNumberIDs(cartId, idProd)
+  if (test.error) return res.send(test)
+
 
   try {
     const modifiedChart = carts.find(c => c.id === cartId)
-    const newProductInChart = archivoProductos.getById(idProd)
-
 
     if (modifiedChart) {
+      const newProductInChart = archivoProductos.getById(idProd)
       newProductInChart
         .then(found => {
           if (found) {
             return modifiedChart.addProduct(found)
           } else {
-            throw new Error('Cart o Producto no encontrado.')
+            throw new Error('Producto no encontrado.')
           }
         })
         .then(r => res.send({ idCarrito: cartId, ...r }))
     } else {
-      throw new Error('Cart o Producto no encontrado.')
+      throw new Error('Cart no encontrado.')
     }
   } catch (err) {
-    console.log('Error en  de archivo:', err)
     res.send({ ok: false, msg: err })
   }
 }
 
 export const deleteFromCartByProdId = (req, res) => {
-  const cartId = req.body.cartId ? parseInt(req.body.cartId) : -1
-  const idProd = req.params.idProd ? parseInt(req.params.idProd) : -1
+  const cartId = req.body.cartId && !isNaN(req.body.cartId) ? parseInt(req.body.cartId) : -1
+  const idProd = req.params.idProd && !isNaN(req.params.idProd) ? parseInt(req.params.idProd) : -1
+
+  const test = invalidateNumberIDs(cartId, idProd)
+  if (test.error) return res.send(test)
+
 
   try {
     const modifiedCart = carts.find(c => c.id === cartId)
@@ -87,14 +110,18 @@ export const deleteFromCartByProdId = (req, res) => {
       res.send({ ok: false, msg: `Carrito no encontrado con ID ${cartId}` })
     }
   } catch (err) {
-    console.log('Error en  de archivo:', err)
     res.send({ ok: false, msg: err })
   }
 }
 
 
-export const cleanCartById = (req, res) => {
-  const cartId = req.body.cartId ? parseInt(req.body.cartId) : -1
+export const wipeCart = (req, res) => {
+  const cartId = req.body.cartId && !isNaN(req.body.cartId) ? parseInt(req.body.cartId) : -1
+
+  const test = invalidateNumberIDs(cartId)
+  if (test.error) return res.send(test)
+
+
   try {
     const modifiedCart = carts.find(c => c.id === cartId)
     if (modifiedCart) {
@@ -104,7 +131,6 @@ export const cleanCartById = (req, res) => {
       res.send({ ok: false, msg: `Carrito no encontrado con ID ${cartId}` })
     }
   } catch (err) {
-    console.log('Error en  de archivo:', err)
     res.send({ ok: false, msg: err })
   }
 }

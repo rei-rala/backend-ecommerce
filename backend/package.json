@@ -7,7 +7,7 @@
     "build": "webpack",
     "wbuild": "webpack -w",
     "start": "nodemon .",
-    "test":"webpack && nodemon ."
+    "comp":"webpack && nodemon ."
   },
   "keywords": [],
   "author": "rei-rala",
