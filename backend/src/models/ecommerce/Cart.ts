@@ -1,5 +1,5 @@
 import { Product } from "./Product";
-import { archivoCarts } from "./Archivo";
+import { archivoCarts } from "../persistence/Archivo";
 
 export class Cart {
   id: number

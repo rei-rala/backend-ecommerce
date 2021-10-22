@@ -1,4 +1,4 @@
-import { archivoProductos } from "../models/Archivo"
+import { archivoProductos } from "../models/persistence/Archivo"
 import { Product } from "../models/Product"
 import { apiResp } from "../types"
 

@@ -1,11 +1,13 @@
+require('dotenv').config()
+console.log(process.env.test)
 
 export const express = require('express')
 const cartsRoute = require('./routes/carts.routes')
 const productsRoute = require('./routes/product.routes')
 const cartIndividualRoute = require('./routes/cartIndividual.routes')
 
-import { archivoProductos } from "./models/Archivo"
-import { archivoCarts } from "./models/Archivo"
+import { archivoProductos } from "./models/persistence/Archivo"
+import { archivoCarts } from "./models/persistence/Archivo"
 
 import { addCart, deleteCartById, getCartId, getCarts, updateCartById } from "./controllers/carts.controller"
 import { addProd, deleteProductById, getProdById, getProds, updateProductById } from "./controllers/products.controller"

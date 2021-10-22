@@ -1,6 +1,6 @@
-import { archivoCarts, archivoProductos } from "../models/Archivo"
-import { Cart } from "../models/Cart"
-import { carts } from "../models/CartIndividual"
+import { archivoCarts, archivoProductos } from "../models/persistence/Archivo"
+import { Cart } from "../models/ecommerce/Cart"
+import { carts } from "../models/ecommerce/CartIndividual"
 
 const invalidateNumberIDs = (idCarrito: number, idProducto?: number) => {
   if (idProducto && idProducto === -1 && idCarrito && idCarrito === -1) { return ({ error: true, msg: 'ID Producto e ID Carrito invalido' }) }

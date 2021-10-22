@@ -1,5 +1,5 @@
-import { Product } from "./Product";
-import { Cart } from "./Cart";
+import { Product } from "../ecommerce/Product";
+import { Cart } from "../ecommerce/Cart";
 
 const fs = require("fs")
 

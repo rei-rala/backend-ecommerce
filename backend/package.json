@@ -7,7 +7,7 @@
     "build": "webpack",
     "wbuild": "webpack -w",
     "start": "nodemon .",
-    "comp":"webpack && nodemon ."
+    "comp": "webpack && nodemon ."
   },
   "keywords": [],
   "author": "rei-rala",
@@ -21,6 +21,11 @@
   },
   "dependencies": {
     "@types/express": "^4.17.13",
-    "express": "^4.17.1"
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "knex": "^0.95.11",
+    "mongoose": "^6.0.12",
+    "mysql": "^2.18.1",
+    "sqlite3": "^5.0.2"
   }
 }

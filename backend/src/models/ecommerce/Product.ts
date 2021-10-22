@@ -1,4 +1,4 @@
-import { archivoProductos } from "./Archivo"
+import { archivoProductos } from "../persistence/Archivo"
 
 export class Product {
   id: number

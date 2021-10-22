@@ -1,5 +1,5 @@
-import { archivoCarts } from "../models/Archivo"
-import { Cart } from "../models/Cart"
+import { archivoCarts } from "../models/persistence/Archivo"
+import { Cart } from "../models/ecommerce/Cart"
 import { apiResp } from "../types"
 
 export const getCarts = (req, res) => {
